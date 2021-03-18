@@ -16,7 +16,13 @@ class UserController extends Controller
     try {
         if (! $token = JWTAuth::attempt($credentials)) {
             return response()->json(['error' => 'invalid_credentials'], 400);
+        } 
+        if( JWTAuth::user()->email_verified_at === null){
+            return response()->json(['error' => 'email not verify'], 400);
         }
+
+
+
     } catch (JWTException $e) {
         return response()->json(['error' => 'could_not_create_token'], 500);
     }
@@ -57,9 +63,13 @@ class UserController extends Controller
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
         ]);
+        
+        //sending email verificvation
+        $user->sendEmailVerificationNotification();
 
-        $token = JWTAuth::fromUser($user);
+        return response()->json(['email send'],201);
 
-        return response()->json(compact('user','token'),201);
+        //$token = JWTAuth::fromUser($user);
+        //return response()->json(compact('user','token'),201);
     }
 }
