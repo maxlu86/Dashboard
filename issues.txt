@@ -1,3 +1,0 @@
-continuar con verficación email
--> migrate tables
--> configuración de base de datos
